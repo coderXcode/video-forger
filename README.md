@@ -594,8 +594,9 @@ video-forger/
 
 ## License
 
-Video Forger is released under the **MIT License**.
+Video Forger is released under the **Apache 2.0 License**.
 
 This project uses [Remotion](https://remotion.dev) for video rendering.
 Remotion is **free** for individuals and teams of 3 or fewer people.
 For larger teams, a Remotion license is required — see [remotion.dev/license](https://remotion.dev/license).
+Go play for non commercial purposes, for commercial purposes give right credits (helps the developers!), Have a good time , OK , thanks, bye - Manas Joshi
