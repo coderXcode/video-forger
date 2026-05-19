@@ -69,7 +69,7 @@
 
 ### Product demo
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/product-demo.mp4
+<video src="https://github.com/coderXcode/video-forger/raw/main/sample_videos/product-demo.mp4" controls width="100%"></video>
 
 ```
 Make me a 45-second product demo video for a SaaS tool called "Video Forger".
