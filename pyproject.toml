@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "video-forger"
+version = "1.0.0"
+description = "AI-powered programmatic video generation with Claude Desktop MCP integration"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["video", "ai", "mcp", "claude", "remotion", "animation", "docker"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Software Development :: Code Generators",
+    "Environment :: Console",
+]
+
+[project.scripts]
+video-forger = "video_forger.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/video-forger"
+"Bug Tracker" = "https://github.com/yourusername/video-forger/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["video_forger*"]
+
+[tool.setuptools.package-data]
+video_forger = ["assets/**/*", "assets/*"]

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Video Forger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;--bg4:#1e1e1e;--bg5:#262626;
+  --border:#242424;--text:#F0EAD6;--muted:#5a5a5a;--muted2:#3a3a3a;
+  --orange:#FF6520;--orange-lo:rgba(255,101,32,.12);--orange-mid:rgba(255,101,32,.25);
+  --green:#28C840;--red:#FF4444;--yellow:#F5C518;--blue:#58b5ff;
+  --sidebar:220px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
+
+/* ── Sidebar ── */
+#sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.sb-logo-mark{font-size:20px;filter:drop-shadow(0 0 6px var(--orange))}
+.sb-logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.03em}
+.sb-logo-text span{color:var(--orange)}
+.sb-nav{flex:1;padding:10px 6px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:background .12s,color .12s;user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--orange-lo);color:var(--orange)}
+.nav-item .ni{font-size:15px;width:18px;text-align:center}
+.sb-footer{padding:12px 10px;border-top:1px solid var(--border)}
+.license-card{background:var(--orange-lo);border:1px solid var(--orange-mid);border-radius:9px;padding:10px 12px}
+.lc-title{font-size:11px;font-weight:700;color:var(--orange);display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.lc-body{font-size:10px;color:var(--muted);line-height:1.5}
+.lc-body a{color:var(--orange);text-decoration:none}
+.lc-body a:hover{text-decoration:underline}
+
+/* ── Main ── */
+#main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:10px;background:var(--bg2);flex-shrink:0}
+.topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
+.topbar-actions{margin-left:auto;display:flex;gap:8px}
+.content{flex:1;overflow-y:auto;padding:20px}
+
+/* ── Buttons ── */
+.btn{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:opacity .12s,transform .08s;display:inline-flex;align-items:center;gap:5px;font-family:inherit;letter-spacing:.01em;white-space:nowrap}
+.btn:hover{opacity:.82}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.25)}
+.btn-sm{padding:5px 10px;font-size:11px}
+
+/* ── Views ── */
+.view{display:none}.view.active{display:block}
+
+/* ── Stats ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:16px 18px}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:7px}
+.stat-value{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1}
+.stat-value.accent{color:var(--orange)}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* ── Section ── */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+hr.div{border:none;border-top:1px solid var(--border);margin:22px 0}
+
+/* ── Composition list ── */
+.comp-list{display:flex;flex-direction:column;gap:8px}
+.comp-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .12s}
+.comp-card:hover{border-color:var(--bg5)}
+.comp-emo{font-size:26px;flex-shrink:0}
+.comp-info{flex:1;min-width:0}
+.comp-name{font-weight:600;font-size:14px;margin-bottom:3px}
+.comp-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.comp-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── Video grid ── */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.video-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;overflow:hidden;transition:border-color .12s}
+.video-card:hover{border-color:var(--orange)}
+.video-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);cursor:pointer;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.video-thumb video{width:100%;height:100%;object-fit:cover}
+.play-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:36px;opacity:0;transition:opacity .18s}
+.video-thumb:hover .play-overlay{opacity:1}
+.video-thumb-ph{font-size:40px;opacity:.3}
+.video-info{padding:10px 12px}
+.video-name{font-weight:600;font-size:12px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.video-meta-row{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between}
+.video-actions{padding:0 12px 10px;display:flex;gap:6px}
+
+/* ── Upload ── */
+.drop-zone{border:2px dashed var(--border);border-radius:13px;padding:44px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s;display:flex;flex-direction:column;align-items:center;gap:11px}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--orange);background:var(--orange-lo)}
+.dz-icon{font-size:44px;opacity:.7}
+.dz-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700}
+.dz-sub{font-size:13px;color:var(--muted);max-width:340px;line-height:1.5}
+.template-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:16px}
+.template-label{font-size:12px;font-weight:600;color:var(--orange);margin-bottom:8px}
+.template-code{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+
+/* ── Jobs ── */
+.job-list{display:flex;flex-direction:column;gap:8px}
+.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 16px}
+.job-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.job-name{font-weight:600;font-size:13px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.badge.running{background:rgba(245,197,24,.12);color:var(--yellow)}
+.badge.complete{background:rgba(40,200,64,.12);color:var(--green)}
+.badge.error{background:rgba(255,68,68,.12);color:var(--red)}
+.badge.pending{background:var(--bg3);color:var(--muted)}
+.job-time{margin-left:auto;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.job-bar{height:4px;background:var(--bg5);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.job-fill{height:100%;background:var(--orange);transition:width .4s;border-radius:2px}
+.job-fill.done{background:var(--green)}.job-fill.err{background:var(--red)}
+.job-out{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+
+/* ── Empty ── */
+.empty{text-align:center;padding:50px 20px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty-icon{font-size:42px;opacity:.35}
+.empty-title{font-size:16px;font-weight:600;color:var(--text);opacity:.55}
+.empty-sub{font-size:13px;max-width:280px;line-height:1.5}
+
+/* ── Toast ── */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);pointer-events:auto;display:flex;align-items:center;gap:7px;animation:toastIn .18s ease}
+.toast.ok{border-color:rgba(40,200,64,.35)}.toast.err{border-color:rgba(255,68,68,.35)}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}}
+
+/* ── Editor modal ── */
+#ed-modal{position:fixed;inset:0;z-index:800;display:none;background:rgba(0,0,0,.88);align-items:center;justify-content:center}
+#ed-modal.open{display:flex}
+.modal-box{width:92vw;height:92vh;max-width:1500px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.modal-hd{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;background:var(--bg3);flex-shrink:0}
+.modal-filename{font-family:'JetBrains Mono',monospace;font-size:13px;flex:1}
+.modal-body{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+#monaco-wrap{flex:1;overflow:hidden;min-height:0}
+.render-panel{display:none;border-top:1px solid var(--border);background:var(--bg);padding:12px 16px;flex-shrink:0}
+.render-panel.on{display:block}
+.render-ph{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-bottom:8px}
+.render-bar-wrap{height:5px;background:var(--bg5);border-radius:3px;margin-bottom:8px;overflow:hidden}
+.render-bar{height:100%;width:0%;background:var(--orange);transition:width .4s;border-radius:3px}
+.render-log{font-family:'JetBrains Mono',monospace;font-size:10px;color:#7ed321;height:110px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.modal-ft{height:58px;border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;background:var(--bg3);flex-shrink:0}
+.meta-row{display:flex;gap:8px;flex:1}
+.meta-group{display:flex;flex-direction:column;gap:2px}
+.meta-group label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.meta-group input{background:var(--bg5);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 7px;width:74px}
+.meta-note{font-size:10px;color:var(--muted);text-align:right;max-width:180px;line-height:1.4}
+
+/* ── Player modal ── */
+#play-modal{position:fixed;inset:0;z-index:900;display:none;background:rgba(0,0,0,.96);align-items:center;justify-content:center;cursor:zoom-out}
+#play-modal.open{display:flex}
+#play-modal video{max-width:92vw;max-height:92vh;border-radius:8px;cursor:default}
+#play-close{position:fixed;top:16px;right:20px;font-size:22px;cursor:pointer;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;z-index:901}
+
+/* ── Spinner ── */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── Tag ── */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;background:var(--bg3);color:var(--muted)}
+.tag.accent{background:var(--orange-lo);color:var(--orange)}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
+
+/* ── AI Chat ── */
+#view-chat{display:none;flex-direction:column;height:100%;overflow:hidden}
+#view-chat.active{display:flex}
+.chat-wrap{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.chat-bubble{max-width:82%;border-radius:13px;padding:12px 15px;font-size:13px;line-height:1.6;word-break:break-word}
+.chat-bubble.user{align-self:flex-end;background:var(--orange);color:#fff;border-bottom-right-radius:4px}
+.chat-bubble.assistant{align-self:flex-start;background:var(--bg3);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-bubble.system{align-self:center;background:transparent;color:var(--muted);font-size:11px;text-align:center;padding:4px 8px;max-width:90%}
+.chat-bubble pre{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;overflow-x:auto;margin:8px 0;white-space:pre-wrap;word-break:break-all}
+.chat-bubble code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px}
+.chat-bubble .chat-actions{margin-top:10px;display:flex;gap:7px;flex-wrap:wrap}
+.chat-typing{align-self:flex-start;display:flex;align-items:center;gap:5px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:13px;border-bottom-left-radius:4px}
+.chat-typing-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:chatdot 1.2s infinite ease-in-out}
+.chat-typing-dot:nth-child(2){animation-delay:.2s}
+.chat-typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes chatdot{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1);opacity:1}}
+.chat-input-row{border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:9px;align-items:flex-end;background:var(--bg2);flex-shrink:0}
+.chat-input-row textarea{flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;resize:none;min-height:40px;max-height:140px;outline:none;transition:border-color .14s;line-height:1.5}
+.chat-input-row textarea:focus{border-color:var(--orange)}
+.chat-send-btn{background:var(--orange);border:none;border-radius:9px;color:#fff;width:40px;height:40px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .12s}
+.chat-send-btn:hover{opacity:.82}
+.chat-send-btn:disabled{opacity:.35;cursor:not-allowed}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px;padding:30px 20px;text-align:center}
+.chat-empty-icon{font-size:48px;opacity:.5}
+.chat-empty-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;opacity:.7}
+.chat-empty-sub{font-size:13px;color:var(--muted);max-width:360px;line-height:1.6}
+.chat-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:500px}
+.chat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 13px;font-size:12px;cursor:pointer;transition:border-color .12s,color .12s}
+.chat-chip:hover{border-color:var(--orange);color:var(--orange)}
+.chat-no-key{background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--yellow);margin:12px 20px 0;display:none}
+.chat-video-preview{margin-top:10px;border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+.chat-video-preview video{width:100%;display:block;max-width:480px}</style>
+</head>
+<body>
+
+<!-- ────────────────────────── SIDEBAR ───────────────────────────────────── -->
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">🔨</div>
+    <div class="sb-logo-text">Video <span>Forger</span></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-item active" data-v="dashboard" onclick="nav('dashboard',this)"><span class="ni">📊</span>Dashboard</div>
+    <div class="nav-item" data-v="chat" onclick="nav('chat',this)"><span class="ni">🤖</span>AI Chat</div>
+    <div class="nav-item" data-v="compositions" onclick="nav('compositions',this)"><span class="ni">🎬</span>Compositions</div>
+    <div class="nav-item" data-v="videos" onclick="nav('videos',this)"><span class="ni">🎥</span>Videos</div>
+    <div class="nav-item" data-v="jobs" onclick="nav('jobs',this)"><span class="ni">⚙</span>Render Jobs</div>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="license-card">
+      <div class="lc-title">✅ Free License</div>
+      <div class="lc-body">
+        No account or sign-up required.<br>
+        Free for individuals &amp; teams&nbsp;≤&nbsp;3 people. Commercial use allowed.<br>
+        <a href="https://remotion.dev/license" target="_blank">remotion.dev/license ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────── MAIN ────────────────────────────────────── -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="refresh()">↻ Refresh</button>
+      <button class="btn btn-primary btn-sm" onclick="nav('chat',document.querySelector('[data-v=chat]'))">&#129302; AI Chat</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Compositions</div><div class="stat-value accent" id="s-comps">—</div><div class="stat-sub">TSX files</div></div>
+        <div class="stat-card"><div class="stat-label">Videos Generated</div><div class="stat-value" id="s-vids">—</div><div class="stat-sub">MP4 renders</div></div>
+        <div class="stat-card"><div class="stat-label">Storage Used</div><div class="stat-value" id="s-size">—</div><div class="stat-sub">MB in generated_videos</div></div>
+        <div class="stat-card"><div class="stat-label">Active Renders</div><div class="stat-value" id="s-run">0</div><div class="stat-sub" id="s-run-sub">Idle</div></div>
+      </div>
+
+      <div class="section-hd"><div class="section-title">Recent Compositions</div><button class="btn btn-ghost btn-sm" onclick="nav('compositions',document.querySelector('[data-v=compositions]'))">View all →</button></div>
+      <div class="comp-list" id="dash-comps"></div>
+
+      <hr class="div">
+
+      <div class="section-hd"><div class="section-title">Recent Videos</div><button class="btn btn-ghost btn-sm" onclick="nav('videos',document.querySelector('[data-v=videos]'))">View all →</button></div>
+      <div class="video-grid" id="dash-vids"></div>
+    </div>
+
+    <!-- AI CHAT -->
+    <div class="view" id="view-chat" style="padding:0;height:100%">
+      <div class="chat-wrap">
+        <div id="chat-no-key" class="chat-no-key">
+          ⚠️ <strong>GOOGLE_AI_STUDIO_API_KEY</strong> is not set. Add it to <code>.env</code> and restart to enable AI Chat.
+          &nbsp;<a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--yellow)">Get a free key ↗</a>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-empty" id="chat-empty">
+            <div class="chat-empty-icon">🤖</div>
+            <div class="chat-empty-title">AI Video Assistant</div>
+            <div class="chat-empty-sub">Describe the video you want. Gemini will write the TSX composition, render it, and let you iterate — all from this chat.</div>
+            <div class="chat-chips">
+              <div class="chat-chip" onclick="chipSend(this)">Product demo, dark theme, 30 seconds</div>
+              <div class="chat-chip" onclick="chipSend(this)">Logo reveal with spring animation</div>
+              <div class="chat-chip" onclick="chipSend(this)">Animated bar chart, monthly revenue</div>
+              <div class="chat-chip" onclick="chipSend(this)">Social reel 9:16 announcing 50% sale</div>
+              <div class="chat-chip" onclick="chipSend(this)">Countdown from 10 to 0 with glow effect</div>
+              <div class="chat-chip" onclick="chipSend(this)">Code walkthrough with syntax highlighting</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <textarea id="chat-input" placeholder="Describe your video or ask for changes…" rows="1"
+            onkeydown="chatKeydown(event)" oninput="autoResize(this)"></textarea>
+          <button class="chat-send-btn" id="chat-send" onclick="chatSend()" title="Send (Enter)">&#10148;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPOSITIONS -->
+    <div class="view" id="view-compositions">
+      <div class="section-hd">
+        <div class="section-title">All Compositions</div>
+        <button class="btn btn-primary btn-sm" onclick="nav('chat',document.querySelector('[data-v=chat]'))">&#129302; New via AI Chat</button>
+      </div>
+      <div class="comp-list" id="all-comps"></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="view" id="view-videos">
+      <div class="section-hd"><div class="section-title">Generated Videos</div><span class="tag accent" id="vid-count"></span></div>
+      <div class="video-grid" id="all-vids"></div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="view" id="view-upload">
+      <div style="max-width:580px;margin:0 auto;padding-top:10px">
+        <div class="section-hd"><div class="section-title">Upload TSX Composition</div></div>
+
+        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('fi').click()">
+          <div class="dz-icon">📂</div>
+          <div class="dz-title">Drop your .tsx file here</div>
+          <div class="dz-sub">Or click to browse. The file must export a default React component using Remotion APIs.</div>
+          <input type="file" id="fi" accept=".tsx,.ts" style="display:none" onchange="handleFile(this.files[0])">
+        </div>
+
+        <div class="template-box">
+          <div class="template-label">📋 Required file format</div>
+          <pre class="template-code">// @remotion durationInFrames=900 fps=30 width=1920 height=1080
+// ↑ Optional — overrides default composition settings
+
+import React from 'react';
+import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion';
+
+export default function MyVideo() {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, 30], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+  return (
+    &lt;AbsoluteFill style={{ background: '#070707', opacity }}&gt;
+      {/* Your animation here */}
+    &lt;/AbsoluteFill&gt;
+  );
+}</pre>
+        </div>
+
+        <div id="upload-result" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- JOBS -->
+    <div class="view" id="view-jobs">
+      <div class="section-hd"><div class="section-title">Render Jobs</div><button class="btn btn-ghost btn-sm" onclick="loadJobs()">↻ Refresh</button></div>
+      <div class="job-list" id="all-jobs"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ─────────────────────── EDITOR MODAL ─────────────────────────────────── -->
+<div id="ed-modal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span style="font-size:16px">🎬</span>
+      <div class="modal-filename" id="ed-filename">composition.tsx</div>
+      <span id="ed-saved" style="font-size:10px;color:var(--muted)"></span>
+      <button class="btn btn-ghost btn-sm" onclick="saveComp()">💾 Save</button>
+      <button class="btn btn-primary btn-sm" id="render-btn" onclick="renderComp()">▶ Render</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeEditor()">✕ Close</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="monaco-wrap"></div>
+
+      <div id="render-panel" class="render-panel">
+        <div class="render-ph">
+          <div class="spin" id="r-spin" style="display:none"></div>
+          <span id="r-label">Render Progress</span>
+          <span id="r-pct" style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange)"></span>
+        </div>
+        <div class="render-bar-wrap"><div class="render-bar" id="r-bar"></div></div>
+        <div class="render-log" id="r-log"></div>
+      </div>
+    </div>
+
+    <div class="modal-ft">
+      <div class="meta-row">
+        <div class="meta-group"><label>Duration (frames)</label><input type="number" id="m-dur" value="900" min="1"></div>
+        <div class="meta-group"><label>FPS</label><input type="number" id="m-fps" value="30" min="1" max="120"></div>
+        <div class="meta-group"><label>Width (px)</label><input type="number" id="m-w" value="1920" min="1"></div>
+        <div class="meta-group"><label>Height (px)</label><input type="number" id="m-h" value="1080" min="1"></div>
+      </div>
+      <div class="meta-note">Saved as a comment in the file. Applied on next render.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────── PLAYER MODAL ─────────────────────────────────── -->
+<div id="play-modal" onclick="closePlayer()">
+  <div id="play-close" onclick="closePlayer()">✕</div>
+  <video id="play-vid" controls onclick="event.stopPropagation()"></video>
+</div>
+
+<!-- ─────────────────────── TOAST ────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<!-- ─────────────────────── MONACO CDN ───────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs/loader.js"></script>
+<script>
+// ── Monaco init ───────────────────────────────────────────────────────────────
+require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs' } });
+require(['vs/editor/editor.main'], () => {
+  monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({ noSemanticValidation: true });
+  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+    jsx: monaco.languages.typescript.JsxEmit.React,
+    allowNonTsExtensions: true,
+    target: monaco.languages.typescript.ScriptTarget.ES2020,
+  });
+});
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let editor = null, curComp = null, curJob = null, pollT = null;
+const TITLES = { dashboard:'Dashboard', chat:'AI Chat', compositions:'Compositions', videos:'Generated Videos', upload:'Upload TSX', jobs:'Render Jobs' };
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+async function api(url, opts = {}) {
+  const r = await fetch(`/api${url}`, { headers:{'Content-Type':'application/json'}, ...opts });
+  if (!r.ok) { const t = await r.text(); throw new Error(t || `HTTP ${r.status}`); }
+  return r.json();
+}
+function fmt_size(b) { return b>1048576?`${(b/1048576).toFixed(1)} MB`:b>1024?`${(b/1024).toFixed(0)} KB`:`${b} B`; }
+function fmt_date(d) { return new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmt_dur(f,fps) { const s=Math.floor(f/fps); return s<60?`${s}s`:`${Math.floor(s/60)}m ${s%60}s`; }
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function nav(v, el) {
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  $(`view-${v}`)?.classList.add('active');
+  el?.classList.add('active');
+  $('page-title').textContent = TITLES[v] || v;
+  if (v==='dashboard')    loadDashboard();
+  if (v==='compositions') loadComps();
+  if (v==='videos')       loadVideos();
+  if (v==='jobs')         loadJobs();
+  if (v==='chat')         initChat();
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+
+// ── AI Chat ───────────────────────────────────────────────────────────────────
+let chatHistory = [];   // [{role:'user'|'assistant', content:string}]
+let chatHasKey  = true;
+let chatBusy    = false;
+
+async function initChat() {
+  try {
+    const info = await api('/chat/status');
+    chatHasKey = info.hasKey;
+    if (!chatHasKey) {
+      const w = $('chat-no-key');
+      if (w) w.style.display = 'block';
+    }
+  } catch(_) {}
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function chipSend(el) {
+  $('chat-input').value = el.textContent;
+  chatSend();
+}
+
+function chatAppend(role, html, id) {
+  const empty = $('chat-empty');
+  if (empty) empty.remove();
+  const msgs = $('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-bubble ${role}`;
+  if (id) div.id = id;
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function chatTyping() {
+  const empty = $('chat-empty');
+  if (empty) empty.remove();
+  const msgs = $('chat-messages');
+  const div = document.createElement('div');
+  div.id = 'chat-typing';
+  div.className = 'chat-typing';
+  div.innerHTML = '<div class="chat-typing-dot"></div><div class="chat-typing-dot"></div><div class="chat-typing-dot"></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function chatRemoveTyping() { $('chat-typing')?.remove(); }
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderMd(text) {
+  text = text.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) => `<pre>${escHtml(code.trim())}</pre>`);
+  text = text.replace(/`([^`]+)`/g, (_, c) => `<code>${escHtml(c)}</code>`);
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+
+async function chatSend() {
+  if (chatBusy) return;
+  const inp = $('chat-input');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = ''; inp.style.height = 'auto';
+
+  chatAppend('user', escHtml(msg));
+  chatHistory.push({ role: 'user', content: msg });
+
+  chatBusy = true;
+  $('chat-send').disabled = true;
+  chatTyping();
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, history: chatHistory.slice(-20) }),
+    });
+    const data = await resp.json();
+    chatRemoveTyping();
+
+    if (!resp.ok) {
+      chatAppend('assistant', `<span style="color:var(--red)">&#10060; ${escHtml(data.error || 'Error')}</span>`);
+    } else {
+      let html = renderMd(data.reply || '');
+      const actions = [];
+
+      if (data.compositionName) {
+        actions.push(`<button class="btn btn-ghost btn-sm" onclick="openEditor('${data.compositionName}')">&#9999;&#65039; Edit TSX</button>`);
+        actions.push(`<button class="btn btn-primary btn-sm" id="chat-render-btn-${data.compositionName}" onclick="chatRender('${data.compositionName}', this)">&#9654; Render</button>`);
+      }
+      if (data.videoUrl) {
+        html += `<div class="chat-video-preview"><video src="${data.videoUrl}" controls preload="metadata"></video></div>`;
+        actions.push(`<a href="${data.videoUrl}" download class="btn btn-ghost btn-sm">&#11015; Download</a>`);
+      }
+      if (actions.length) html += `<div class="chat-actions">${actions.join('')}</div>`;
+
+      chatAppend('assistant', html);
+      chatHistory.push({ role: 'assistant', content: data.reply || '' });
+
+      if (data.autoRender && data.compositionName) {
+        setTimeout(() => chatRender(data.compositionName, $(`chat-render-btn-${data.compositionName}`)), 400);
+      }
+    }
+  } catch(e) {
+    chatRemoveTyping();
+    chatAppend('assistant', `<span style="color:var(--red)">&#10060; ${escHtml(e.message)}</span>`);
+  }
+
+  chatBusy = false;
+  $('chat-send').disabled = false;
+  $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
+}
+
+async function chatRender(name, btn) {
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Rendering&hellip;'; }
+  const progressId = 'chat-prog-' + name + '-' + Date.now();
+  const prog = chatAppend('system', `&#9203; Rendering <strong>${name}</strong>&hellip; <span id="${progressId}">0%</span>`);
+
+  try {
+    const { jobId } = await api(`/render/${name}`, { method: 'POST' });
+    await pollUntilDone(jobId, progressId, async (job) => {
+      if (job.status === 'complete') {
+        const vids = await api('/videos');
+        const match = vids.find(v => v.filename === job.outputFilename);
+        let html = `&#9989; Rendered <strong>${job.outputFilename}</strong>`;
+        if (match) {
+          html += `<div class="chat-video-preview"><video src="${match.url}" controls preload="metadata"></video></div>`;
+          html += `<div class="chat-actions"><a href="${match.url}" download class="btn btn-ghost btn-sm">&#11015; Download</a><button class="btn btn-ghost btn-sm" onclick="chatRender('${name}', this)">&#9654; Re-render</button></div>`;
+        }
+        prog.className = 'chat-bubble assistant';
+        prog.innerHTML = html;
+        chatHistory.push({ role: 'assistant', content: `Rendered successfully: ${job.outputFilename}` });
+        if (btn) { btn.disabled = false; btn.innerHTML = '&#9654; Re-render'; }
+        loadStats();
+      } else if (job.status === 'error') {
+        prog.className = 'chat-bubble assistant';
+        prog.innerHTML = `<span style="color:var(--red)">&#10060; Render failed: ${escHtml(job.error)}</span>`;
+        if (btn) { btn.disabled = false; btn.innerHTML = '&#9654; Retry'; }
+      }
+    });
+  } catch(e) {
+    prog.className = 'chat-bubble assistant';
+    prog.innerHTML = `<span style="color:var(--red)">&#10060; ${escHtml(e.message)}</span>`;
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#9654; Render'; }
+  }
+}
+
+async function pollUntilDone(jobId, progressId, onDone) {
+  return new Promise((resolve) => {
+    const t = setInterval(async () => {
+      try {
+        const j = await api(`/jobs/${jobId}`);
+        const el = $(progressId);
+        if (el) el.textContent = `${Math.round(j.progress)}%`;
+        if (j.status === 'complete' || j.status === 'error') {
+          clearInterval(t);
+          await onDone(j);
+          resolve();
+        }
+      } catch(_) {}
+    }, 1500);
+  });
+}
+
+async function loadStats() {
+  try {
+    const s = await api('/stats');
+    $('s-comps').textContent = s.compositions;
+    $('s-vids').textContent  = s.totalVideos;
+    $('s-size').textContent  = s.totalVideoSizeMB;
+    $('s-run').textContent   = s.jobsRunning;
+    $('s-run-sub').textContent = s.jobsRunning > 0
+      ? `${s.jobsRunning} in progress`
+      : `${s.jobsCompleted} done · ${s.jobsFailed} failed`;
+  } catch(e) {}
+}
+
+// ── Compositions ──────────────────────────────────────────────────────────────
+async function loadComps() {
+  try {
+    const list = await api('/compositions');
+    renderCompList('all-comps', list);
+    renderCompList('dash-comps', list.slice(0,5));
+  } catch(e) {
+    $('all-comps').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Load failed</div></div>`;
+  }
+}
+
+function renderCompList(id, list) {
+  const el = $(id);
+  if (!list.length) { el.innerHTML=`<div class="empty"><div class="empty-icon">🎬</div><div class="empty-title">No compositions yet</div><div class="empty-sub">Upload a .tsx file to get started</div></div>`; return; }
+  el.innerHTML = list.map(c=>`
+    <div class="comp-card">
+      <div class="comp-emo">📄</div>
+      <div class="comp-info">
+        <div class="comp-name">${c.name}</div>
+        <div class="comp-meta">
+          <span>⏱ ${fmt_dur(c.meta.durationInFrames,c.meta.fps)}</span>
+          <span>🎞 ${c.meta.fps}fps</span>
+          <span>📐 ${c.meta.width}×${c.meta.height}</span>
+          <span>💾 ${fmt_size(c.size)}</span>
+          <span>🕐 ${fmt_date(c.modified)}</span>
+        </div>
+      </div>
+      <div class="comp-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openEditor('${c.name}')">✏️ Edit</button>
+        <button class="btn btn-primary btn-sm" onclick="quickRender('${c.name}',this)">▶ Render</button>
+        <button class="btn btn-danger btn-sm" onclick="delComp('${c.name}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+async function delComp(name) {
+  if (!confirm(`Delete "${name}.tsx"?`)) return;
+  try { await api(`/compositions/${name}`,{method:'DELETE'}); toast('ok',`Deleted ${name}`); loadComps(); loadStats(); }
+  catch(e) { toast('err',e.message); }
+}
+
+async function quickRender(name, btn) {
+  btn.disabled=true; btn.textContent='⏳';
+  try {
+    const {jobId} = await api(`/render/${name}`,{method:'POST'});
+    toast('ok',`Render started: ${name}`);
+    nav('jobs',document.querySelector('[data-v=jobs]'));
+    setTimeout(loadJobs,600);
+  } catch(e) { toast('err',e.message); btn.disabled=false; btn.textContent='▶ Render'; }
+}
+
+// ── Videos ────────────────────────────────────────────────────────────────────
+async function loadVideos() {
+  try {
+    const list = await api('/videos');
+    $('vid-count').textContent = `${list.length} video${list.length!==1?'s':''}`;
+    renderVideoGrid('all-vids', list);
+    renderVideoGrid('dash-vids', list.slice(0,6));
+  } catch(e) {}
+}
+
+function renderVideoGrid(id, list) {
+  const el = $(id);
+  if (!list.length) { el.innerHTML=`<div class="empty"><div class="empty-icon">🎥</div><div class="empty-title">No videos yet</div><div class="empty-sub">Render a composition to generate your first video</div></div>`; return; }
+  el.innerHTML = list.map(v=>`
+    <div class="video-card">
+      <div class="video-thumb" onclick="playVideo('${v.url}')">
+        <video src="${v.url}#t=0.5" preload="metadata" muted></video>
+        <div class="play-overlay">▶</div>
+      </div>
+      <div class="video-info">
+        <div class="video-name" title="${v.filename}">${v.filename}</div>
+        <div class="video-meta-row"><span>${fmt_size(v.size)}</span><span>${fmt_date(v.created)}</span></div>
+      </div>
+      <div class="video-actions">
+        <a href="${v.url}" download="${v.filename}" class="btn btn-ghost btn-sm">⬇ Download</a>
+        <button class="btn btn-danger btn-sm" onclick="delVideo('${encodeURIComponent(v.filename)}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function playVideo(url) {
+  $('play-vid').src = url;
+  $('play-modal').classList.add('open');
+  $('play-vid').play();
+}
+function closePlayer() {
+  $('play-modal').classList.remove('open');
+  $('play-vid').pause(); $('play-vid').src='';
+}
+
+async function delVideo(filename) {
+  if (!confirm(`Delete "${decodeURIComponent(filename)}"?`)) return;
+  try { await api(`/videos/${filename}`,{method:'DELETE'}); toast('ok','Video deleted'); loadVideos(); loadStats(); }
+  catch(e) { toast('err',e.message); }
+}
+
+// ── Editor ────────────────────────────────────────────────────────────────────
+async function openEditor(name) {
+  curComp = name;
+  $('ed-filename').textContent = `${name}.tsx`;
+  $('ed-saved').textContent = '';
+  $('render-panel').classList.remove('on');
+  $('ed-modal').classList.add('open');
+
+  try {
+    const {content,meta} = await api(`/compositions/${name}`);
+    $('m-dur').value = meta.durationInFrames;
+    $('m-fps').value = meta.fps;
+    $('m-w').value   = meta.width;
+    $('m-h').value   = meta.height;
+
+    const setVal = () => {
+      if (editor) editor.setValue(content);
+      else {
+        editor = monaco.editor.create($('monaco-wrap'), {
+          value: content, language:'typescript', theme:'vs-dark',
+          fontSize:13, lineHeight:21,
+          fontFamily:"'JetBrains Mono', monospace",
+          minimap:{enabled:false}, scrollBeyondLastLine:false,
+          wordWrap:'off', tabSize:2, automaticLayout:true,
+        });
+        // Ctrl+S to save
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveComp);
+      }
+    };
+    if (window.monaco) setVal(); else setTimeout(setVal, 400);
+  } catch(e) { toast('err',`Load failed: ${e.message}`); }
+}
+
+function closeEditor() {
+  $('ed-modal').classList.remove('open');
+  if (pollT) { clearInterval(pollT); pollT=null; }
+  curComp=null; curJob=null;
+}
+
+function injectMeta(content) {
+  const tag = `// @remotion durationInFrames=${$('m-dur').value} fps=${$('m-fps').value} width=${$('m-w').value} height=${$('m-h').value}`;
+  const stripped = content.replace(/^\/\/ @remotion.*\n?/m,'');
+  return `${tag}\n${stripped}`;
+}
+
+async function saveComp() {
+  if (!editor||!curComp) return;
+  try {
+    const body = JSON.stringify({content: injectMeta(editor.getValue())});
+    const {meta} = await api(`/compositions/${curComp}`,{method:'PUT',body});
+    $('ed-saved').textContent = '✅ Saved';
+    $('m-dur').value=meta.durationInFrames; $('m-fps').value=meta.fps; $('m-w').value=meta.width; $('m-h').value=meta.height;
+    setTimeout(()=>{ $('ed-saved').textContent=''; },2200);
+    toast('ok','Saved');
+  } catch(e) { toast('err',`Save failed: ${e.message}`); }
+}
+
+async function renderComp() {
+  if (!curComp) return;
+  await saveComp();
+
+  const panel=$('render-panel'); panel.classList.add('on');
+  $('r-bar').style.width='0%'; $('r-bar').style.background='var(--orange)';
+  $('r-pct').textContent='0%'; $('r-log').textContent='Starting...\n';
+  $('r-spin').style.display='inline-block'; $('r-label').textContent='Rendering…';
+  $('render-btn').disabled=true;
+
+  try {
+    const {jobId} = await api(`/render/${curComp}`,{method:'POST'});
+    curJob=jobId;
+    if (pollT) clearInterval(pollT);
+    pollT = setInterval(()=>pollJob(jobId),1200);
+  } catch(e) {
+    toast('err',`Render failed: ${e.message}`);
+    $('r-spin').style.display='none'; $('render-btn').disabled=false;
+  }
+}
+
+async function pollJob(jobId) {
+  try {
+    const j = await api(`/jobs/${jobId}`);
+    const pct = Math.round(j.progress);
+    $('r-bar').style.width = `${pct}%`;
+    $('r-pct').textContent = `${pct}%`;
+    const logEl = $('r-log');
+    logEl.textContent = j.logs.slice(-60).join('\n');
+    logEl.scrollTop = logEl.scrollHeight;
+
+    if (j.status==='complete') {
+      clearInterval(pollT); pollT=null;
+      $('r-bar').style.background='var(--green)';
+      $('r-spin').style.display='none';
+      $('r-label').textContent=`✅ Done — ${j.outputFilename}`;
+      $('render-btn').disabled=false;
+      toast('ok',`Rendered: ${j.outputFilename}`);
+      loadStats();
+    } else if (j.status==='error') {
+      clearInterval(pollT); pollT=null;
+      $('r-bar').style.background='var(--red)';
+      $('r-spin').style.display='none';
+      $('r-label').textContent=`❌ ${j.error}`;
+      $('render-btn').disabled=false;
+      toast('err',`Render failed: ${j.error}`);
+    }
+  } catch(e) {}
+}
+
+// ── Upload ────────────────────────────────────────────────────────────────────
+const dz = $('drop-zone');
+dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+
+async function handleFile(file) {
+  if (!file) return;
+  if (!file.name.match(/\.(tsx|ts)$/i)) { toast('err','Only .tsx / .ts files'); return; }
+  const res = $('upload-result');
+  res.innerHTML=`<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><div class="spin"></div>Uploading ${file.name}…</div>`;
+  const fd = new FormData(); fd.append('file',file);
+  try {
+    const r = await fetch('/api/compositions',{method:'POST',body:fd});
+    if (!r.ok) throw new Error(await r.text());
+    const d = await r.json();
+    res.innerHTML=`<div style="background:rgba(40,200,64,.08);border:1px solid rgba(40,200,64,.3);border-radius:9px;padding:13px 15px;font-size:12px;color:var(--green)">
+      ✅ Uploaded <strong>${d.name}</strong>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="openEditor('${d.name}')">✏️ Edit</button>
+        <button class="btn btn-primary btn-sm" onclick="quickRenderByName('${d.name}')">▶ Render Now</button>
+      </div></div>`;
+    toast('ok',`Uploaded ${file.name}`); loadStats();
+  } catch(e) {
+    res.innerHTML=`<div style="background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.3);border-radius:9px;padding:13px 15px;font-size:12px;color:var(--red)">❌ ${e.message}</div>`;
+    toast('err',e.message);
+  }
+}
+
+async function quickRenderByName(name) {
+  try { const {jobId}=await api(`/render/${name}`,{method:'POST'}); toast('ok',`Render started: ${name}`); nav('jobs',document.querySelector('[data-v=jobs]')); }
+  catch(e) { toast('err',e.message); }
+}
+
+// ── Jobs ──────────────────────────────────────────────────────────────────────
+async function loadJobs() {
+  try {
+    const list = await api('/jobs');
+    const el = $('all-jobs');
+    if (!list.length) { el.innerHTML=`<div class="empty"><div class="empty-icon">⚙</div><div class="empty-title">No render jobs yet</div><div class="empty-sub">Render a composition to see jobs here</div></div>`; return; }
+    el.innerHTML = list.map(j=>{
+      const dur = j.endTime ? `${((j.endTime-j.startTime)/1000).toFixed(1)}s` : '…';
+      return `<div class="job-card">
+        <div class="job-hd">
+          <div class="job-name">${j.compositionName}</div>
+          <span class="badge ${j.status}">${j.status}</span>
+          <span class="job-time">${fmt_date(j.startTime)} · ${dur}</span>
+        </div>
+        <div class="job-bar"><div class="job-fill ${j.status==='complete'?'done':j.status==='error'?'err':''}" style="width:${j.progress}%"></div></div>
+        <div class="job-out">
+          ${j.status==='complete'&&j.outputFilename?`✅ ${j.outputFilename}`:''}
+          ${j.status==='error'?`❌ ${j.error}`:''}
+          ${j.status==='running'?`⏳ ${j.progress}% rendered`:''}
+        </div>
+      </div>`;
+    }).join('');
+    // Auto-refresh while renders are running
+    if (list.some(j=>j.status==='running'||j.status==='pending')) setTimeout(loadJobs,2000);
+  } catch(e) {}
+}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  await Promise.all([loadStats(), loadComps(), loadVideos()]);
+}
+
+function refresh() {
+  const v = document.querySelector('.view.active')?.id?.replace('view-','');
+  if (v==='dashboard') loadDashboard();
+  if (v==='compositions') loadComps();
+  if (v==='videos') loadVideos();
+  if (v==='jobs') loadJobs();
+  loadStats();
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(type,msg) {
+  const el = document.createElement('div');
+  el.className=`toast ${type}`; el.innerHTML=`${type==='ok'?'✅':'❌'} ${msg}`;
+  $('toast').appendChild(el); setTimeout(()=>el.remove(),4000);
+}
+
+// ── Keyboard ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if (e.key==='Escape') {
+    if ($('play-modal').classList.contains('open')) closePlayer();
+    else if ($('ed-modal').classList.contains('open')) closeEditor();
+  }
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadDashboard();
+setInterval(loadStats, 10000);
+</script>
+</body>
+</html>

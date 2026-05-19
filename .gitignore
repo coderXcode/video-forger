@@ -1,0 +1,62 @@
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Build output ──────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+.remotion/
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Sample videos (committed to repo for README embeds) ─────────────────────
+!sample_videos/
+
+# ── Generated project data (persisted via Docker volume — do not commit) ──────
+project_mnts/generated_videos/*.mp4
+project_mnts/uploaded_tsx/*.tsx
+public/audio/
+
+# Keep the directory stubs so git tracks them
+!project_mnts/generated_videos/.gitkeep
+!project_mnts/uploaded_tsx/.gitkeep
+!public/audio/.gitkeep
+
+# ── Python / pip package build artifacts ─────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.eggs/
+video_forger/assets/
+dist/*.whl
+dist/*.tar.gz
+dist/*.egg
+.venv/
+venv/
+env/
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/

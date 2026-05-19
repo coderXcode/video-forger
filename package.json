@@ -1,0 +1,28 @@
+{
+  "name": "video-forger",
+  "version": "1.0.0",
+  "description": "Video Forger — AI-powered programmatic video generation with Claude MCP integration",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "preview": "npx remotion preview src/index.ts",
+    "render": "npx remotion render src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}

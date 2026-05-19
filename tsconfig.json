@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "CommonJS",
+    "jsx": "react",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*",
+    "project_mnts/uploaded_tsx/**/*",
+    "remotion.config.ts"
+  ],
+  "exclude": ["node_modules", "server.js"]
+}

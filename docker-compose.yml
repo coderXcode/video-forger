@@ -1,0 +1,38 @@
+name: video-forger
+
+services:
+  video-forger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: video-forger
+    env_file:
+      - .env
+    ports:
+      - "${STUDIO_PORT:-3000}:3000"
+    volumes:
+      # Mount project directories so data persists across restarts
+      - ./project_mnts:/app/project_mnts
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GOOGLE_AI_STUDIO_API_KEY=${GOOGLE_AI_STUDIO_API_KEY}
+      - GOOGLE_AI_STUDIO_TTS_MODEL=${GOOGLE_AI_STUDIO_TTS_MODEL}
+      - GOOGLE_AI_STUDIO_TTS_VOICE=${GOOGLE_AI_STUDIO_TTS_VOICE}
+      - GOOGLE_AI_STUDIO_TTS_SPEAKING_RATE=${GOOGLE_AI_STUDIO_TTS_SPEAKING_RATE}
+      - GOOGLE_AI_STUDIO_TTS_PITCH=${GOOGLE_AI_STUDIO_TTS_PITCH}
+      # Point Remotion at the system Chromium installed in the image
+      - CHROMIUM_PATH=/usr/bin/chromium
+      # Disable GPU — required for headless rendering in Docker
+      - REMOTION_DISABLE_GPU=1
+      - VIDEO_FORGER_ORIGIN=${VIDEO_FORGER_ORIGIN:-http://localhost:3000}
+      - VIDEO_FORGER_URL=${VIDEO_FORGER_URL:-http://localhost:3000}
+      - VIDEO_FORGER_CONTAINER=${VIDEO_FORGER_CONTAINER:-video-forger}
+      - NARRATION_COMPOSITIONS=${NARRATION_COMPOSITIONS:-MCPForgerVideoNarrated,MCPForgerVideoStudioNarrated}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
