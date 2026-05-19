@@ -69,8 +69,6 @@
 
 ### Product demo
 
-<video src="https://github.com/coderXcode/video-forger/raw/main/sample_videos/product-demo.mp4" controls width="100%"></video>
-
 ```
 Make me a 45-second product demo video for a SaaS tool called "Video Forger".
 Use a dark theme with indigo, violet, and pink gradient accents throughout.
@@ -83,9 +81,10 @@ By the Numbers — Four stat cards: < 5 min first video, 1 cmd to start, 0 Node.
 Outro — Pulsing glow background, logo, bold CTA text "Ship your first video in under 5 minutes", and the install command in a terminal-style box. Add AI voice narration (energetic tone, Puck voice) synced to each scene — no overlap between clips. No background music.
 ```
 
-### Animated logo reveal
+https://github.com/user-attachments/assets/c0e5e062-bd9a-4ed3-b35a-8d756a430ac7
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/logo-reveal.mp4
+
+### Animated logo reveal
 
 ```
 Create a 10-second logo reveal animation for "Apex Labs".
@@ -93,9 +92,10 @@ Start with particles converging to the center, then the company name
 springs in with a bounce effect. Use gold on black.
 ```
 
-### Data visualization
+https://github.com/user-attachments/assets/29c2e50a-be20-488e-af06-b65cf6fc63c5
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/data-viz.mp4
+
+### Data visualization
 
 ```
 Build a 20-second animated bar chart video showing monthly revenue
@@ -103,9 +103,11 @@ growing from $10k in January to $95k in December.
 Animate each bar rising one by one as the months progress.
 ```
 
-### Social media short (9:16 vertical)
+https://github.com/user-attachments/assets/a58ef24c-7174-477d-a9d5-bee9b6409033
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/social-short.mp4
+
+
+### Social media short (9:16 vertical)
 
 ```
 Make a 15-second vertical video (1080×1920) for Instagram Reels
@@ -113,9 +115,11 @@ announcing a summer sale: "50% OFF — Ends Sunday".
 Bold text, bright orange gradient background, countdown feel.
 ```
 
-### Code walkthrough
+https://github.com/user-attachments/assets/8168eaf1-c29b-47ba-8e54-b2b69dd62182
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/code-walkthrough.mp4
+
+
+### Code walkthrough
 
 ```
 Create a 45-second video that reveals a Python quicksort function
@@ -123,9 +127,14 @@ line by line, with syntax highlighting.
 Each line appears with a fade-in as if being typed.
 ```
 
+https://github.com/user-attachments/assets/437cd6a7-4c36-4517-9c7b-f0fd2017af00
+
+
+
+
 ### Presentation slides
 
-https://github.com/coderXcode/video-forger/raw/main/sample_videos/presentation.mp4
+https://github.com/user-attachments/assets/9de5c9c7-2626-4ef1-8d77-9a916fab73d0
 
 ```
 Build a 60-second presentation video with 4 slides:
