@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://github.com/coderXcode/video-forger/stargazers"><img src="https://img.shields.io/github/stars/coderXcode/video-forger?style=flat-square&color=orange" alt="GitHub Stars"/></a>
-  <a href="https://pypi.org/project/video-forger/"><img src="https://img.shields.io/pypi/v/video-forger?style=flat-square&color=blue" alt="PyPI"/></a>
+  <a href="https://pypi.org/project/video-forger/"><img src="https://img.shields.io/pypi/v/video-forger?style=flat-square&color=blue&cacheSeconds=1" alt="PyPI"/></a>
   <img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"/>
   <img src="https://img.shields.io/badge/Claude-MCP%20plugin-FF6B35?style=flat-square" alt="Claude MCP Plugin"/>
-  <img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="MIT License"/>
+  <img src="https://img.shields.io/badge/license-Apache%202.0-22c55e?style=flat-square" alt="Apache 2.0 License"/>
 </p>
 
 <p align="center">
